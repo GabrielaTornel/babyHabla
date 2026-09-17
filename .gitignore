@@ -1,0 +1,12 @@
+.docs-pipeline/
+.docs-pipeline.log
+.gitattributes
+
+# Unused raw backups / reference images (not read by the app)
+BD.rar
+BD Terminado.rar
+BD/
+Captura de pantalla*.png
+ChatGPT Image*.png
+flujo.png
+mascota.png

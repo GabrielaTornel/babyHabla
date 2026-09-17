@@ -1,0 +1,71 @@
+name: tinytalk
+description: A playful first-words learning app for babies and toddlers.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  audioplayers: ^6.2.0
+  video_player: ^2.9.2
+  cached_network_image: ^3.4.1
+  collection: ^1.19.0
+  flutter_riverpod: ^2.6.1
+  flutter_tts: ^4.2.2
+  freezed_annotation: ^2.4.4
+  go_router: ^14.8.1
+  json_annotation: ^4.9.0
+  lottie: ^3.3.1
+  shared_preferences: ^2.5.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  build_runner: ^2.4.15
+  flutter_lints: ^5.0.0
+  freezed: ^2.5.8
+  json_serializable: ^6.9.4
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/data/
+    - assets/images/branding/
+    - assets/images/animals/
+    - assets/images/colors/
+    - assets/images/fruits/
+    - assets/images/family/
+    - assets/images/toys/
+    - assets/images/food/
+    - assets/images/actions/
+    - assets/images/transport/
+    - "assets/images/body part/"
+    - assets/audio/es/animals/
+    - assets/audio/en/animals/
+    - assets/audio/es/colors/
+    - assets/audio/en/colors/
+    - assets/audio/es/fruits/
+    - assets/audio/en/fruits/
+    - assets/audio/es/family/
+    - assets/audio/en/family/
+    - assets/audio/es/toys/
+    - assets/audio/en/toys/
+    - assets/audio/es/food/
+    - assets/audio/en/food/
+    - assets/audio/es/actions/
+    - assets/audio/en/actions/
+    - assets/audio/es/transport/
+    - "assets/audio/es/body part/"
+    - assets/images/layouts/
+    - assets/video/
+    - assets/audio/en/layout/
+    - assets/audio/es/layout/
+    - assets/lottie/

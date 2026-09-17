@@ -1,0 +1,10 @@
+{
+  "changelogEnabled": true,
+  "docsUpdateEnabled": true,
+  "summaryEnabled": true,
+  "autoCommit": true,
+  "claudeBin": "",
+  "docsDebug": false,
+  "summaryDebug": false,
+  "changelogBaseBranch": ""
+}
