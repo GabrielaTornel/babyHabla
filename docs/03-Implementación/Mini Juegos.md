@@ -5,7 +5,7 @@ tags: [tipo/implementación, estado/aprobado, prioridad/alto, tech/frontend, tec
 
 # Mini Juegos (tinytalk)
 
-Módulo feature-first en `tinytalk/lib/features/mini_games/`. Cada minijuego sigue el mismo patrón: `models/` (estado inmutable de dominio del juego), `providers/` (Riverpod `Notifier`/`AsyncNotifier`), `presentation/<juego>/` (pantalla + `widgets/` con `CustomPainter` u otros widgets propios).
+Módulo feature-first en `tinytalk/lib/features/mini_games/`. Cada minijuego sigue el mismo patrón: `models/` (estado inmutable de dominio del juego), `providers/` (Riverpod `Notifier`/`AsyncNotifier`), `presentation/<juego>/` (pantalla + `widgets/` con `CustomPainter` u otros widgets propios). Widgets reutilizados **entre** minijuegos (no exclusivos de uno) viven en `features/mini_games/widgets/` (ej. `drawing_palette.dart`).
 
 Catálogo definido en `tinytalk/lib/app/constants/mini_game_data.dart` (`MiniGameData`: id, títulos ES/EN, emoji, gradiente, descripción ES/EN) y enrutado en `tinytalk/lib/app/router/app_router.dart` vía `switch` sobre `gameId` en la ruta `AppRoutes.miniGame`.
 
@@ -20,8 +20,9 @@ Catálogo definido en `tinytalk/lib/app/constants/mini_game_data.dart` (`MiniGam
 | `touch_color` | `TouchColorScreen` | Toca el Color | Toca el color correcto |
 | `follow_star` | `FollowStarScreen` | Sigue la Estrella | Sigue la estrella mágica |
 | `dress_up` | `DressUpScreen` | Viste a Coco | Pon accesorios a Coco |
-| `trace_path` | `TracePathScreen` | Sigue el Camino | Sigue el camino con tu dedo — **nuevo** |
-| `free_draw` | `FreeDrawScreen` | Dibuja Libre | Dibuja lo que quieras — **nuevo** |
+| `trace_path` | `TracePathScreen` | Sigue el Camino | Sigue el camino con tu dedo |
+| `free_draw` | `FreeDrawScreen` | Dibuja Libre | Dibuja lo que quieras |
+| `coloring_book` | `ColoringGalleryScreen` → `ColoringCanvasScreen` | Colorea | Pinta los dibujos — **nuevo** |
 
 ## Sigue el Camino (`trace_path`)
 
@@ -54,30 +55,58 @@ Canvas libre: el niño dibuja con el dedo eligiendo color, tipo de pincel y tama
 - `BrushSize`: `small`, `medium`, `large`.
 - `BrushWidth` (extension sobre `BrushType`): `widthFor(BrushSize)` resuelve el ancho de trazo por combinación pincel/tamaño.
 - `DrawStroke`: `color`, `points` (lista de `Offset`), `brushType`, `width`; `withPoint(Offset)` retorna copia extendida (inmutable).
+- `StrokePaint` (extension sobre `DrawStroke`): `toPaint()` — resuelve el `Paint` de renderizado por `brushType` (antes vivía como método privado `_paintFor` dentro de `DrawPainter`; ahora es reutilizable desde cualquier painter, incluido `ColoringPainter`).
 - `FreeDrawPalette`: paleta fija de 8 colores, alineada a la de `touch_color`.
 
 **Provider** — `providers/free_draw_provider.dart`
 - `FreeDrawState`: `strokes`, `selectedColor`, `selectedBrush`, `selectedSize`, `isPanelOpen`.
 - `FreeDrawNotifier extends Notifier<FreeDrawState>`: `selectColor`, `selectBrush`, `selectSize`, `startStroke(Offset)`, `extendStroke(Offset)` (agrega punto al último trazo), `clear()`, `togglePanel()`.
+- Reutilizado también por `coloring_book`: `ColoringCanvasScreen` hace `ProviderScope(overrides: [freeDrawProvider], ...)` para obtener una instancia de estado fresca por página de coloreado (evita arrastrar trazos entre páginas o con la pantalla `free_draw`).
 
 **Pantalla** — `presentation/free_draw/free_draw_screen.dart`
-- Canvas full-screen vía `GestureDetector` (`onPanStart`/`onPanUpdate`) + `DrawPainter` (`widgets/draw_painter.dart`) como `foregroundPainter`.
-- `DrawPainter._paintFor`: estilo de trazo por `BrushType` — `pencil`/`marker` sólidos con cap distinto; `brush`/`watercolor` con `MaskFilter.blur` y opacidad reducida (0.92 / 0.35).
-- Panel de paleta colapsable (`isPanelOpen`), adaptado a orientación (abajo en portrait, lateral en landscape): selector de color, pincel y tamaño.
+- Canvas full-screen vía `GestureDetector` (`onPanStart`/`onPanUpdate`) + `DrawPainter` (`widgets/draw_painter.dart`) como `foregroundPainter`; `DrawPainter` ahora delega el estilo de trazo a `stroke.toPaint()`.
+- Panel de paleta colapsable (`isPanelOpen`), adaptado a orientación (abajo en portrait, lateral en landscape): selector de color, pincel y tamaño — **extraído** a `DrawingPalette` (`features/mini_games/widgets/drawing_palette.dart`), junto con `GlassButton` y `PanelReopenButton`, para compartirlo con `coloring_book`.
 - Copy: `AppCopy.freeDrawHint` (ES/EN).
 
-## Diagrama de flujo (nuevo minijuego)
+## Colorea (`coloring_book`)
+
+Libro de colorear: el niño elige un dibujo de línea (blanco y negro) en una galería y lo pinta encima con el mismo lienzo/paleta de `free_draw`.
+
+**Modelo** — `models/coloring_page.dart`
+- `ColoringPage`: `id`, `titleEs`, `titleEn`, `assetPath`.
+- Catálogo estático `coloringPages`: `olaf` (`assets/images/coloring/olaf.png`), `frozen_elsa` (`assets/images/coloring/frozen.webp`).
+
+**Pantallas** — `presentation/coloring_book/`
+- `coloring_gallery_screen.dart` (`ColoringGalleryScreen`, `ConsumerWidget`): grilla (`SliverGrid.builder`, `maxCrossAxisExtent: 180`) de tarjetas por `ColoringPage`, título según `AppLanguage` activo; tap navega a `AppRoutes.coloringPagePath(page.id)`.
+- `coloring_canvas_screen.dart` (`ColoringCanvasScreen`, recibe `pageId`): carga el asset de línea vía `rootBundle.load` + `ui.instantiateImageCodec` a un `ui.Image`; mientras carga muestra `CircularProgressIndicator`. Reutiliza `freeDrawProvider` (con `ProviderScope` override, ver arriba) y `DrawingPalette` para el mismo flujo de dibujo que `free_draw`.
+- `widgets/coloring_painter.dart` (`ColoringPainter`): pinta fondo blanco, luego los trazos del niño (`stroke.toPaint()`), y finalmente la línea de arte (`lineArt`) con `BlendMode.multiply` — el blanco del dibujo se vuelve transparente (deja ver el color pintado debajo) y el negro de las líneas se mantiene siempre visible encima.
+
+**Routing** — dos niveles:
+1. `AppRoutes.miniGame` (`/mini-games/:gameId`) con `gameId == 'coloring_book'` → `ColoringGalleryScreen` (mismo `switch` que el resto de minijuegos).
+2. Ruta dedicada `AppRoutes.coloringPage` (`/coloring/:pageId`) → `ColoringCanvasScreen(pageId: ...)`, navegada por `context.push(AppRoutes.coloringPagePath(pageId))` desde la galería.
+
+Copy: `AppCopy.chooseADrawing` (ES/EN) en `app/localization/app_language.dart`.
+
+Assets: nueva carpeta `assets/images/coloring/` declarada en `pubspec.yaml`.
+
+## Diagrama de flujo (minijuegos de dibujo)
 
 ```mermaid
 flowchart LR
     A[MiniGamesScreen] -->|selecciona id| B[app_router.dart switch gameId]
     B --> C1[TracePathScreen]
     B --> C2[FreeDrawScreen]
+    B --> C3[ColoringGalleryScreen]
     C1 --> D1[tracePathProvider AsyncNotifier]
     D1 --> E1[wordsProvider categoría family]
     C1 --> F1[PathPainter]
     C2 --> D2[freeDrawProvider Notifier]
     C2 --> F2[DrawPainter]
+    C2 --> G[DrawingPalette]
+    C3 -->|context.push coloringPagePath| C4[ColoringCanvasScreen]
+    C4 --> D2
+    C4 --> F3[ColoringPainter]
+    C4 --> G
 ```
 
 ## Relacionado
