@@ -9,6 +9,8 @@ import '../../features/mini_games/presentation/mini_games_screen.dart';
 import '../../features/mini_games/presentation/dress_up/dress_up_screen.dart';
 import '../../features/mini_games/presentation/follow_star/follow_star_screen.dart';
 import '../../features/mini_games/presentation/free_draw/free_draw_screen.dart';
+import '../../features/mini_games/presentation/coloring_book/coloring_canvas_screen.dart';
+import '../../features/mini_games/presentation/coloring_book/coloring_gallery_screen.dart';
 import '../../features/mini_games/presentation/trace_path/trace_path_screen.dart';
 import '../../features/mini_games/presentation/touch_color/touch_color_screen.dart';
 import '../../features/mini_games/presentation/pop_bubbles/pop_bubbles_screen.dart';
@@ -59,8 +61,16 @@ final appRouter = GoRouter(
           'dress_up' => const DressUpScreen(),
           'trace_path' => const TracePathScreen(),
           'free_draw' => const FreeDrawScreen(),
+          'coloring_book' => const ColoringGalleryScreen(),
           _ => const MiniGamesScreen(),
         };
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.coloringPage,
+      builder: (context, state) {
+        final pageId = state.pathParameters['pageId']!;
+        return ColoringCanvasScreen(pageId: pageId);
       },
     ),
   ],

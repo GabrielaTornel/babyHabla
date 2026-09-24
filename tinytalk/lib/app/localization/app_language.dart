@@ -51,9 +51,11 @@ class AppCopy {
       isSpanish ? 'Reiniciar progreso' : 'Reset progress';
   String get continueLabel => isSpanish ? 'Continuar' : 'Continue';
   String get miniGames => isSpanish ? 'Mini Juegos' : 'Mini Games';
-  String get miniGamesSubtitle => isSpanish ? '¡Juega y aprende!' : 'Play and learn!';
+  String get miniGamesSubtitle =>
+      isSpanish ? '¡Juega y aprende!' : 'Play and learn!';
   String get popBubbles => isSpanish ? 'Revienta Burbujas' : 'Pop Bubbles';
-  String get tapBubbles => isSpanish ? '¡Toca las burbujas!' : 'Tap the bubbles!';
+  String get tapBubbles =>
+      isSpanish ? '¡Toca las burbujas!' : 'Tap the bubbles!';
   String get congratulations => isSpanish ? '¡Felicidades!' : 'Well done!';
   String get timeUp => isSpanish ? '¡Se acabó el tiempo!' : "Time's up!";
   String get playAgain => isSpanish ? 'Jugar de nuevo' : 'Play again';
@@ -69,8 +71,9 @@ class AppCopy {
       isSpanish ? '¡Toca el animal correcto!' : 'Tap the right animal!';
   String feedPrompt(String food, String animal) =>
       isSpanish ? 'Dale $food al $animal' : 'Give $food to the $animal';
-  String get dragFoodInstruction =>
-      isSpanish ? 'Arrastra la comida al animal' : 'Drag the food to the animal';
+  String get dragFoodInstruction => isSpanish
+      ? 'Arrastra la comida al animal'
+      : 'Drag the food to the animal';
   String get dragInstruction =>
       isSpanish ? 'Arrastra al lugar correcto' : 'Drag to the right place';
   String touchColorPrompt(String colorName) =>
@@ -79,19 +82,22 @@ class AppCopy {
       isSpanish ? '¡Toca el color correcto!' : 'Tap the right color!';
   String get followTheStar =>
       isSpanish ? '¡Sigue la estrella! ✨' : 'Follow the star! ✨';
-  String followThePathTo(String name) => isSpanish
-      ? '¡Sigue el camino hasta $name!'
-      : 'Follow the path to $name!';
-  String get dressUpPrompt =>
-      isSpanish ? '¡Arrastra accesorios a Coco!' : 'Drag accessories onto Coco!';
+  String followThePathTo(String name) =>
+      isSpanish ? '¡Sigue el camino hasta $name!' : 'Follow the path to $name!';
+  String get dressUpPrompt => isSpanish
+      ? '¡Arrastra accesorios a Coco!'
+      : 'Drag accessories onto Coco!';
   String get dressUpCelebration =>
       isSpanish ? '¡Qué bonito quedó Coco! 🎉' : 'Coco looks amazing! 🎉';
   String challengeOf(int current, int total) =>
       isSpanish ? '$current / $total' : '$current / $total';
-  String correctOf(int correct, int total) =>
-      isSpanish ? 'Acertaste $correct de $total 🎉' : 'You got $correct of $total 🎉';
+  String correctOf(int correct, int total) => isSpanish
+      ? 'Acertaste $correct de $total 🎉'
+      : 'You got $correct of $total 🎉';
   String get freeDrawHint =>
       isSpanish ? '¡Dibuja con tu dedo!' : 'Draw with your finger!';
+  String get chooseADrawing =>
+      isSpanish ? 'Elige un dibujo' : 'Choose a drawing';
   String miniGameTitle(MiniGameData game) =>
       isSpanish ? game.titleEs : game.titleEn;
   String get play => isSpanish ? 'Escuchar' : 'Play';

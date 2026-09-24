@@ -19,39 +19,8 @@ class DrawPainter extends CustomPainter {
         path.lineTo(point.dx, point.dy);
       }
 
-      canvas.drawPath(path, _paintFor(stroke));
+      canvas.drawPath(path, stroke.toPaint());
     }
-  }
-
-  Paint _paintFor(DrawStroke stroke) {
-    final paint = Paint()
-      ..color = stroke.color
-      ..strokeWidth = stroke.width
-      ..style = PaintingStyle.stroke;
-
-    switch (stroke.brushType) {
-      case BrushType.pencil:
-        paint
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round;
-      case BrushType.marker:
-        paint
-          ..strokeCap = StrokeCap.square
-          ..strokeJoin = StrokeJoin.miter;
-      case BrushType.brush:
-        paint
-          ..color = stroke.color.withValues(alpha: 0.92)
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, stroke.width * 0.12);
-      case BrushType.watercolor:
-        paint
-          ..color = stroke.color.withValues(alpha: 0.35)
-          ..strokeCap = StrokeCap.round
-          ..strokeJoin = StrokeJoin.round
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, stroke.width * 0.25);
-    }
-    return paint;
   }
 
   @override

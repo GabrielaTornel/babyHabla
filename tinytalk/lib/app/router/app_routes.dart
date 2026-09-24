@@ -7,8 +7,10 @@ class AppRoutes {
   static const settings = '/settings';
   static const miniGames = '/mini-games';
   static const miniGame = '/mini-games/:gameId';
+  static const coloringPage = '/coloring/:pageId';
 
   static String categoryPath(String categoryId) => '/category/$categoryId';
   static String wordPath(String wordId) => '/word/$wordId';
   static String miniGamePath(String gameId) => '/mini-games/$gameId';
+  static String coloringPagePath(String pageId) => '/coloring/$pageId';
 }

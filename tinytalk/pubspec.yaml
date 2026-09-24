@@ -65,6 +65,7 @@ flutter:
     - assets/audio/es/transport/
     - "assets/audio/es/body part/"
     - assets/images/layouts/
+    - assets/images/coloring/
     - assets/video/
     - assets/audio/en/layout/
     - assets/audio/es/layout/

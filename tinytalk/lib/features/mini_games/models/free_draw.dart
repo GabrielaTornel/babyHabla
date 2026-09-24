@@ -45,6 +45,40 @@ class DrawStroke {
       );
 }
 
+extension StrokePaint on DrawStroke {
+  /// The [Paint] this stroke should be rendered with, styled per [brushType].
+  Paint toPaint() {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = width
+      ..style = PaintingStyle.stroke;
+
+    switch (brushType) {
+      case BrushType.pencil:
+        paint
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+      case BrushType.marker:
+        paint
+          ..strokeCap = StrokeCap.square
+          ..strokeJoin = StrokeJoin.miter;
+      case BrushType.brush:
+        paint
+          ..color = color.withValues(alpha: 0.92)
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, width * 0.12);
+      case BrushType.watercolor:
+        paint
+          ..color = color.withValues(alpha: 0.35)
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, width * 0.25);
+    }
+    return paint;
+  }
+}
+
 /// Fixed color palette for the free-draw canvas, matching the
 /// touch-color mini-game's color set for visual consistency.
 class FreeDrawPalette {

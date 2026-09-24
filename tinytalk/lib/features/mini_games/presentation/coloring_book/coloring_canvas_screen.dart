@@ -1,17 +1,73 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../shared/providers/app_language_providers.dart';
+import '../../models/coloring_page.dart';
 import '../../providers/free_draw_provider.dart';
 import '../../widgets/drawing_palette.dart';
-import 'widgets/draw_painter.dart';
+import 'widgets/coloring_painter.dart';
 
-class FreeDrawScreen extends ConsumerWidget {
-  const FreeDrawScreen({super.key});
+class ColoringCanvasScreen extends StatelessWidget {
+  const ColoringCanvasScreen({required this.pageId, super.key});
+
+  final String pageId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final page = coloringPages.firstWhere(
+      (p) => p.id == pageId,
+      orElse: () => coloringPages.first,
+    );
+
+    // Fresh palette state per coloring page: shadow the shared free-draw
+    // provider with a new instance scoped to this screen's subtree.
+    return ProviderScope(
+      overrides: [freeDrawProvider],
+      child: _ColoringCanvasBody(page: page),
+    );
+  }
+}
+
+class _ColoringCanvasBody extends ConsumerStatefulWidget {
+  const _ColoringCanvasBody({required this.page});
+
+  final ColoringPage page;
+
+  @override
+  ConsumerState<_ColoringCanvasBody> createState() =>
+      _ColoringCanvasBodyState();
+}
+
+class _ColoringCanvasBodyState extends ConsumerState<_ColoringCanvasBody> {
+  ui.Image? _lineArt;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLineArt();
+  }
+
+  Future<void> _loadLineArt() async {
+    final bytes = await rootBundle.load(widget.page.assetPath);
+    final codec = await ui.instantiateImageCodec(bytes.buffer.asUint8List());
+    final frame = await codec.getNextFrame();
+    if (mounted) setState(() => _lineArt = frame.image);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lineArt = _lineArt;
+    if (lineArt == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final state = ref.watch(freeDrawProvider);
     final notifier = ref.read(freeDrawProvider.notifier);
     final copy = ref.watch(appCopyProvider);
@@ -23,16 +79,20 @@ class FreeDrawScreen extends ConsumerWidget {
       body: SizedBox.expand(
         child: Stack(
           children: [
-            // ── Drawing canvas (white sheet) ─────────────────────────
+            // ── Coloring canvas (line art on top) ──────────────────────
             Positioned.fill(
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onPanStart: (details) =>
                     notifier.startStroke(details.localPosition),
                 onPanUpdate: (details) =>
                     notifier.extendStroke(details.localPosition),
                 child: CustomPaint(
-                  foregroundPainter: DrawPainter(strokes: state.strokes),
-                  child: Container(color: Colors.white),
+                  painter: ColoringPainter(
+                    strokes: state.strokes,
+                    lineArt: lineArt,
+                  ),
+                  child: const SizedBox.expand(),
                 ),
               ),
             ),

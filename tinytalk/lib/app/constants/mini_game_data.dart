@@ -102,4 +102,13 @@ const miniGames = <MiniGameData>[
     descriptionEs: '¡Dibuja lo que quieras!',
     descriptionEn: 'Draw whatever you like!',
   ),
+  MiniGameData(
+    id: 'coloring_book',
+    titleEs: 'Colorea',
+    titleEn: 'Coloring Book',
+    emoji: '🖌️',
+    gradientColors: [Color(0xFF29B6F6), Color(0xFF7B61FF)],
+    descriptionEs: '¡Pinta los dibujos!',
+    descriptionEn: 'Color the drawings!',
+  ),
 ];
