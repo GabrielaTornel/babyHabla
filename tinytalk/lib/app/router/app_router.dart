@@ -8,6 +8,8 @@ import '../../features/mini_games/presentation/feed_animal/feed_animal_screen.da
 import '../../features/mini_games/presentation/mini_games_screen.dart';
 import '../../features/mini_games/presentation/dress_up/dress_up_screen.dart';
 import '../../features/mini_games/presentation/follow_star/follow_star_screen.dart';
+import '../../features/mini_games/presentation/free_draw/free_draw_screen.dart';
+import '../../features/mini_games/presentation/trace_path/trace_path_screen.dart';
 import '../../features/mini_games/presentation/touch_color/touch_color_screen.dart';
 import '../../features/mini_games/presentation/pop_bubbles/pop_bubbles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -55,6 +57,8 @@ final appRouter = GoRouter(
           'touch_color' => const TouchColorScreen(),
           'follow_star' => const FollowStarScreen(),
           'dress_up' => const DressUpScreen(),
+          'trace_path' => const TracePathScreen(),
+          'free_draw' => const FreeDrawScreen(),
           _ => const MiniGamesScreen(),
         };
       },

@@ -84,4 +84,22 @@ const miniGames = <MiniGameData>[
     descriptionEs: '¡Pon accesorios a Coco!',
     descriptionEn: 'Decorate Coco with accessories!',
   ),
+  MiniGameData(
+    id: 'trace_path',
+    titleEs: 'Sigue el Camino',
+    titleEn: 'Follow the Path',
+    emoji: '🐾',
+    gradientColors: [Color(0xFF4FC3A1), Color(0xFF2E8B7F)],
+    descriptionEs: '¡Sigue el camino con tu dedo!',
+    descriptionEn: 'Trace the path with your finger!',
+  ),
+  MiniGameData(
+    id: 'free_draw',
+    titleEs: 'Dibuja Libre',
+    titleEn: 'Free Draw',
+    emoji: '🖍️',
+    gradientColors: [Color(0xFFFFB300), Color(0xFFE91E63)],
+    descriptionEs: '¡Dibuja lo que quieras!',
+    descriptionEn: 'Draw whatever you like!',
+  ),
 ];

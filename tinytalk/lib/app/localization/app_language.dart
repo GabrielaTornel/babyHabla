@@ -79,6 +79,9 @@ class AppCopy {
       isSpanish ? '¡Toca el color correcto!' : 'Tap the right color!';
   String get followTheStar =>
       isSpanish ? '¡Sigue la estrella! ✨' : 'Follow the star! ✨';
+  String followThePathTo(String name) => isSpanish
+      ? '¡Sigue el camino hasta $name!'
+      : 'Follow the path to $name!';
   String get dressUpPrompt =>
       isSpanish ? '¡Arrastra accesorios a Coco!' : 'Drag accessories onto Coco!';
   String get dressUpCelebration =>
@@ -87,6 +90,8 @@ class AppCopy {
       isSpanish ? '$current / $total' : '$current / $total';
   String correctOf(int correct, int total) =>
       isSpanish ? 'Acertaste $correct de $total 🎉' : 'You got $correct of $total 🎉';
+  String get freeDrawHint =>
+      isSpanish ? '¡Dibuja con tu dedo!' : 'Draw with your finger!';
   String miniGameTitle(MiniGameData game) =>
       isSpanish ? game.titleEs : game.titleEn;
   String get play => isSpanish ? 'Escuchar' : 'Play';
