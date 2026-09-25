@@ -1,6 +1,6 @@
 ---
 tags: [tipo/implementación, estado/aprobado, prioridad/alto, tech/frontend, tech/flutter]
-última-actualización: 2026-09-24
+última-actualización: 2026-09-25
 ---
 
 # Mini Juegos (tinytalk)
@@ -22,7 +22,7 @@ Catálogo definido en `tinytalk/lib/app/constants/mini_game_data.dart` (`MiniGam
 | `dress_up` | `DressUpScreen` | Viste a Coco | Pon accesorios a Coco |
 | `trace_path` | `TracePathScreen` | Sigue el Camino | Sigue el camino con tu dedo |
 | `free_draw` | `FreeDrawScreen` | Dibuja Libre | Dibuja lo que quieras |
-| `coloring_book` | `ColoringGalleryScreen` → `ColoringCanvasScreen` | Colorea | Pinta los dibujos — **nuevo** |
+| `coloring_book` | `ColoringGalleryScreen` → `ColoringCanvasScreen` | Colorea | Pinta los dibujos |
 
 ## Sigue el Camino (`trace_path`)
 
@@ -74,7 +74,10 @@ Libro de colorear: el niño elige un dibujo de línea (blanco y negro) en una ga
 
 **Modelo** — `models/coloring_page.dart`
 - `ColoringPage`: `id`, `titleEs`, `titleEn`, `assetPath`.
-- Catálogo estático `coloringPages`: `olaf` (`assets/images/coloring/olaf.png`), `frozen_elsa` (`assets/images/coloring/frozen.webp`).
+- Catálogo estático `coloringPages`, ampliado a 15 dibujos organizados por franquicia:
+  - Frozen: `olaf`, `frozen_elsa`, `frozen_elsa_2`.
+  - Toy Story: `toy_story_alien`, `bo_peep`, `rex`, `forky`, `buzz_pointing`, `buzz_running`, `potato_heads`.
+  - Moana: `moana_baby`, `moana_portrait`, `moana_beach`, `moana_with_pua`, `maui`.
 
 **Pantallas** — `presentation/coloring_book/`
 - `coloring_gallery_screen.dart` (`ColoringGalleryScreen`, `ConsumerWidget`): grilla (`SliverGrid.builder`, `maxCrossAxisExtent: 180`) de tarjetas por `ColoringPage`, título según `AppLanguage` activo; tap navega a `AppRoutes.coloringPagePath(page.id)`.
@@ -87,7 +90,7 @@ Libro de colorear: el niño elige un dibujo de línea (blanco y negro) en una ga
 
 Copy: `AppCopy.chooseADrawing` (ES/EN) en `app/localization/app_language.dart`.
 
-Assets: nueva carpeta `assets/images/coloring/` declarada en `pubspec.yaml`.
+Assets: carpeta `assets/images/coloring/` declarada en `pubspec.yaml`, formatos mixtos (`.webp`, `.jpg`, `.png`) según el dibujo.
 
 ## Diagrama de flujo (minijuegos de dibujo)
 
