@@ -25,7 +25,9 @@ class PathPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final guidePaint = Paint()..color = Colors.white.withValues(alpha: 0.55);
+    final guideOutline = Paint()..color = Colors.white.withValues(alpha: 0.9);
+    final guidePaint = Paint()..color = const Color(0xFF3642C7);
+    final fillOutline = Paint()..color = Colors.white;
     final fillPaint = Paint()..color = const Color(0xFFFFD700);
     final headPaint = Paint()
       ..color = const Color(0xFFFFD700)
@@ -34,9 +36,11 @@ class PathPainter extends CustomPainter {
     for (var i = 0; i <= _dotCount; i++) {
       final t = i / _dotCount;
       final pos = _toScreen(shape.positionAt(t));
+      canvas.drawCircle(pos, _dotRadius + 1.5, guideOutline);
       canvas.drawCircle(pos, _dotRadius, guidePaint);
       if (t <= progress) {
         final isHead = t + 1 / _dotCount > progress;
+        canvas.drawCircle(pos, _fillRadius + 2, fillOutline);
         canvas.drawCircle(pos, _fillRadius, isHead ? headPaint : fillPaint);
       }
     }

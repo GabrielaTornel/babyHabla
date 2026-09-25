@@ -103,8 +103,6 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
   }
 
   void _handleDrag(Offset touchPos, TracePathShape shape, Size screenSize) {
-    debugPrint(
-        '[trace_path] touch=$touchPos screen=$screenSize progress=$_progress completed=$_completed');
     if (_completed) return;
 
     double bestT = -1;
@@ -121,7 +119,6 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
       }
     }
 
-    debugPrint('[trace_path] bestT=$bestT');
     if (bestT < 0) return;
 
     _emitSparkles(touchPos, count: 4);
@@ -138,9 +135,8 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
   Future<void> _playEndWordAudio() async {
     final round = ref.read(tracePathProvider).valueOrNull?.current;
     if (round == null) return;
-    final language =
-        ref.read(appLanguageControllerProvider).valueOrNull ??
-            AppLanguage.spanish;
+    final language = ref.read(appLanguageControllerProvider).valueOrNull ??
+        AppLanguage.spanish;
 
     final played = await ref
         .read(audioServiceProvider)
@@ -158,9 +154,8 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
   Widget build(BuildContext context) {
     final gameAsync = ref.watch(tracePathProvider);
     final copy = ref.watch(appCopyProvider);
-    final language =
-        ref.watch(appLanguageControllerProvider).valueOrNull ??
-            AppLanguage.spanish;
+    final language = ref.watch(appLanguageControllerProvider).valueOrNull ??
+        AppLanguage.spanish;
 
     return Scaffold(
       body: PlayfulBackground(
@@ -183,9 +178,9 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
             return LayoutBuilder(
               builder: (_, constraints) {
                 final screenSize = constraints.biggest;
-                final startPos = Offset(
-                  round.shape.start.dx * screenSize.width,
-                  round.shape.start.dy * screenSize.height,
+                final babyPos = Offset(
+                  round.shape.positionAt(_progress).dx * screenSize.width,
+                  round.shape.positionAt(_progress).dy * screenSize.height,
                 );
                 final endPos = Offset(
                   round.shape.end.dx * screenSize.width,
@@ -205,34 +200,26 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
                       behavior: HitTestBehavior.opaque,
                       child: const SizedBox.expand(),
                     ),
-
-                    RepaintBoundary(
-                      child: CustomPaint(
-                        painter: PathPainter(
-                          shape: round.shape,
-                          progress: _progress,
-                          screenSize: screenSize,
+                    // A CustomPaint with an explicit `size` always absorbs hit
+                    // tests within its bounds, even without a painter.hitTest
+                    // override — IgnorePointer keeps it purely decorative so
+                    // touches reach the GestureDetector behind it.
+                    IgnorePointer(
+                      child: RepaintBoundary(
+                        child: CustomPaint(
+                          painter: PathPainter(
+                            shape: round.shape,
+                            progress: _progress,
+                            screenSize: screenSize,
+                          ),
+                          size: screenSize,
                         ),
-                        size: screenSize,
                       ),
                     ),
-
                     SparkleOverlay(sparkles: List.of(_sparkles)),
-
-                    if (_progress > 0.0)
-                      Positioned(
-                        left: round.shape.positionAt(_progress).dx *
-                                screenSize.width -
-                            _ProgressMarker.size / 2,
-                        top: round.shape.positionAt(_progress).dy *
-                                screenSize.height -
-                            _ProgressMarker.size / 2,
-                        child: const IgnorePointer(child: _ProgressMarker()),
-                      ),
-
                     Positioned(
-                      left: startPos.dx - 55,
-                      top: startPos.dy - 55,
+                      left: babyPos.dx - 55,
+                      top: babyPos.dy - 55,
                       child: IgnorePointer(
                         child: _startImageFor(round.start.image),
                       ),
@@ -244,7 +231,6 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
                         child: _endImageFor(round.end.image),
                       ),
                     ),
-
                     SafeArea(
                       child: Align(
                         alignment: Alignment.topLeft,
@@ -261,19 +247,19 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
                         ),
                       ),
                     ),
-
                     if (_progress == 0.0)
                       Positioned(
                         bottom: 40,
                         left: 28,
                         right: 28,
-                        child: _PromptBubble(
-                          text: copy.followThePathTo(
-                            round.end.localizedTitle(language),
+                        child: IgnorePointer(
+                          child: _PromptBubble(
+                            text: copy.followThePathTo(
+                              round.end.localizedTitle(language),
+                            ),
                           ),
                         ),
                       ),
-
                     if (state.showCelebration)
                       CelebrationOverlay(
                         key: ValueKey(state.roundsCompleted),
@@ -287,35 +273,6 @@ class _TracePathScreenState extends ConsumerState<TracePathScreen>
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-// ─────────────────────────────────────────────
-// Progress marker (the glowing dot that visibly moves with the finger)
-// ─────────────────────────────────────────────
-
-class _ProgressMarker extends StatelessWidget {
-  const _ProgressMarker();
-
-  static const double size = 26.0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: const Color(0xFFFFD700),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFFFD700).withValues(alpha: 0.75),
-            blurRadius: 16,
-            spreadRadius: 4,
-          ),
-        ],
       ),
     );
   }
