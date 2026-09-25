@@ -39,12 +39,14 @@ Traza con el dedo una curva normalizada (0–1) entre la palabra "bebé" (`famil
 - `dismissCelebration()`, `restart()` (invalida el provider).
 
 **Pantalla** — `presentation/trace_path/trace_path_screen.dart`
-- Detección de trazado: `_handleDrag` muestrea la curva en `_sampleSteps = 120` pasos, valida cercanía táctil por `_hitRadius = 90.0`, avanza `_progress` solo hacia adelante; completa la ronda al superar `_completionThreshold = 0.98`.
+- Detección de trazado: `_handleDrag` muestrea la curva en `_sampleSteps = 120` pasos, valida cercanía táctil por `_hitRadius = 90.0`, avanza `_progress` solo hacia adelante; completa la ronda al superar `_completionThreshold = 0.98`. Ya sin `debugPrint` de depuración (removidos).
+- La imagen de inicio (`_startImageFor`) ahora se posiciona con `round.shape.positionAt(_progress)` (`babyPos`) en vez de quedarse fija en `round.shape.start` — el bebé se mueve visualmente a lo largo del camino a medida que el niño avanza el trazo. Se eliminó el widget `_ProgressMarker` (el punto dorado brillante independiente); la imagen del bebé cumple ahora ese rol de indicador de progreso.
+- El `CustomPaint` decorativo de `PathPainter` está envuelto en `IgnorePointer` (bug conocido de Flutter: un `CustomPaint` con `size` explícito absorbe los touches de su área aunque no tenga `child` ni override de `hitTest`, bloqueando al `GestureDetector` debajo en el `Stack` — ver nota de arquitectura). El `_PromptBubble` (mensaje "sigue el camino hacia...") también se envolvió en `IgnorePointer` por el mismo motivo.
 - Emite `SparkleOverlay` en cada avance y al completar; reproduce audio de la palabra destino (`audioServiceProvider.playAsset`) con fallback a TTS (`ttsServiceProvider.speakWord`).
-- `PathPainter` (`widgets/path_painter.dart`): dibuja guía punteada blanca y relleno dorado de progreso sobre la curva.
+- `PathPainter` (`widgets/path_painter.dart`): dibuja la guía punteada (ahora azul `0xFF3642C7` con contorno blanco, antes blanco semitransparente) y el relleno dorado de progreso (con contorno blanco añadido) sobre la curva, para mejorar el contraste visual de ambos estados de los puntos.
 - Copy: `AppCopy.followThePathTo(String name)` (ES/EN) en `app/localization/app_language.dart`.
 
-> ⚠️ Nota técnica: `_handleDrag` deja dos `debugPrint` activos (touch/screen/progress y `bestT`) en cada `onPanUpdate` — pendiente de limpieza antes de release.
+> Nota de arquitectura (Flutter): cualquier `CustomPaint` puramente decorativo colocado sobre un `GestureDetector` interactivo dentro de un `Stack` debe envolverse en `IgnorePointer` — de lo contrario absorbe los touches y el gesto nunca llega al detector. Aplica también a `follow_star_screen.dart` (`StarTrailPainter`), pendiente de revisión.
 
 ## Dibuja Libre (`free_draw`)
 
