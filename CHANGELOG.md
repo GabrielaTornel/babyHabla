@@ -14,5 +14,12 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - Nuevo minijuego "Colorea": galería de dibujos para colorear (Olaf, Elsa) con lienzo dedicado, mismos pinceles y colores del dibujo libre, y línea de arte que respeta el color pintado debajo
 - 12 nuevos dibujos para colorear de Toy Story (Bo Peep, Rex, Forky, Buzz Lightyear x2, Sr. y Sra. Cara de Papa, Marciano), Moana (Bebé, Retrato, Playa, con Pua, Maui) y Elsa 2
 
+### Corregido
+- "Sigue el Camino": el trazo decorativo del camino ya no bloqueaba el toque del dedo en pantalla
+- "Sigue el Camino": el personaje inicial ahora se mueve junto con el progreso del trazo en vez de quedar fijo
+
+### Cambiado
+- "Sigue el Camino": mejor contraste visual del camino guía y del relleno de progreso con bordes resaltados
+
 ### Refactorizado
 - Paleta de colores, pinceles y tamaños del dibujo libre extraída a componente compartido (`DrawingPalette`), reutilizado por el nuevo minijuego de colorear
